@@ -38,8 +38,38 @@ document.addEventListener('DOMContentLoaded', function()
 
     document.addEventListener(RENDER_EVENT, function()
     {
-        console.log(todos);
+        // console.log(todos);
+
+        const uncomplated = document.getElementById('todos');
+        uncomplated.innerHTML = '';
+
+        for(const todoItem of todo)
+        {
+            const todoElemnt = makeTodo(todoItem);
+            uncomplated.append(todoElemnt);
+        }
+
     });
+
+    function makeTodo(todoObject)
+    {
+        const textTitle = document.createElement('h2');
+        textTitle.innerText = todoObject.task;
+
+        const timeDate = document.createElement('p');
+        timeDate.innerText = todoObject.timestamp;
+
+        const textContainer = document.createElement('div');
+        textContainer.classList.add('inner');
+        textContainer.append(textTitle, timeDate);
+
+        const container = document.createElement('div');
+        container.classList.add('item','shadow');
+        container.append(textContainer);
+        container.setAttribute('id', `todo-${todoObject.id}`);
+
+        return container;
+    }
 
 
 
