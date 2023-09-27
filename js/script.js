@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function()
             const unbutton = document.createElement('button');
             unbutton.classList.add('undo-button');
 
-            undefined.addEventListener('click', function ()
+            unbutton.addEventListener('click', function ()
             {
                 undoTaksFromComplete(todoObject.id);
             });
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function()
 
             trashButoon.addEventListener('click', function()
             {
-                trashTaksFromComplete(todoObject.id);
+                removeTaskFromCompleted(todoObject.id);
             });
 
             container.append(unbutton, trashButoon);
@@ -128,7 +128,10 @@ document.addEventListener('DOMContentLoaded', function()
     document.addEventListener(RENDER_EVENT, function()
     {
         const uncomplatedTodo = document.getElementById('todos');
-        uncomplatedTodo.innerHTML = "";
+        uncomplatedTodo.innerHTML = '';
+
+        const completeTodo = document.getElementById('completed-todos');
+        completeTodo.innerHTML = '';
 
         for(const todoItem of todos )
         {
@@ -137,9 +140,31 @@ document.addEventListener('DOMContentLoaded', function()
             if(!todoItem.isCompleted)
             {
                 uncomplatedTodo.append(todoElement);
+            }else{
+                completeTodo.append(todoElement);
             }
         }
     });
+
+    function removeTaskFromCompleted(todoId)
+    {
+        const todoTarget = findtodo(todoId);
+
+        if(todoTarget === -1) return;
+
+        todos.splice(todoTarget, 1);
+        document.dispatchEvent(new Event(RENDER_EVENT));
+    }
+
+    function undoTaksFromComplete(todoId)
+    {
+        const todoTarget = findtodo(todoId);
+
+        if(todoTarget == null) return;
+
+        todoTarget.isCompleted = false;
+        document.dispatchEvent(new Event(RENDER_EVENT));
+    }
 
 
 });
