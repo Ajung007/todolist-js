@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function()
         const uncomplated = document.getElementById('todos');
         uncomplated.innerHTML = '';
 
-        for(const todoItem of todo)
+        for(const todoItem of todos)
         {
             const todoElemnt = makeTodo(todoItem);
             uncomplated.append(todoElemnt);
@@ -68,9 +68,78 @@ document.addEventListener('DOMContentLoaded', function()
         container.append(textContainer);
         container.setAttribute('id', `todo-${todoObject.id}`);
 
+        if(todoObject.isCompleted)
+        {
+            const unbutton = document.createElement('button');
+            unbutton.classList.add('undo-button');
+
+            undefined.addEventListener('click', function ()
+            {
+                undoTaksFromComplete(todoObject.id);
+            });
+
+            const trashButoon = document.createElement('button');
+            trashButoon.classList.add('trash-button');
+
+            trashButoon.addEventListener('click', function()
+            {
+                trashTaksFromComplete(todoObject.id);
+            });
+
+            container.append(unbutton, trashButoon);
+
+        }else{
+            const checkButton = document.createElement('button');
+            checkButton.classList.add('check-button');
+
+            checkButton.addEventListener('click', function()
+            {
+                addTaskToComplete(todoObject.id);
+            });
+
+            container.append(checkButton);
+        }
+
         return container;
     }
 
+    function addTaskToComplete(todoId)
+    {
+        const todoTarget = findtodo(todoId);
+
+        if(todoTarget === null) return;
+
+        todoTarget.isCompleted = true;
+        document.dispatchEvent(new Event(RENDER_EVENT));
+    }
+
+    function findtodo(todoId)
+    {
+        for(const todoItem of todos)
+        {
+            if(todoItem.id === todoId)
+            {
+                return todoItem;
+            }
+        }
+        return null;
+    }
+
+    document.addEventListener(RENDER_EVENT, function()
+    {
+        const uncomplatedTodo = document.getElementById('todos');
+        uncomplatedTodo.innerHTML = "";
+
+        for(const todoItem of todos )
+        {
+            const todoElement = makeTodo(todoItem);
+
+            if(!todoItem.isCompleted)
+            {
+                uncomplatedTodo.append(todoElement);
+            }
+        }
+    });
 
 
 });
